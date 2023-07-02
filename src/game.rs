@@ -249,5 +249,62 @@ mod test {
         assert_eq!(bad_game, default_game); 
     }
 
+    #[test]
+    fn handle_key_not_opposite_movement() {
+        let mut game = create_basic_game();
+
+        game.handle_key(Key::Down);
+        assert_eq!(game.snake_direction, Direction::Down);
+
+        game.handle_key(Key::Left);
+        assert_eq!(game.snake_direction, Direction::Left);
+
+        game.handle_key(Key::Up);
+        assert_eq!(game.snake_direction, Direction::Up);
+
+        game.handle_key(Key::Right);
+        assert_eq!(game.snake_direction, Direction::Right);
+    }
+
+    #[test]
+    fn handle_key_opposite_movement() {
+        let mut game = create_basic_game();
+
+        game.handle_key(Key::Left);
+        assert_eq!(game.snake_direction, Direction::Right);
+
+        game.handle_key(Key::Up);
+        game.handle_key(Key::Down);
+        assert_eq!(game.snake_direction, Direction::Up);
+
+        game.handle_key(Key::Right);
+        game.handle_key(Key::Left);
+        assert_eq!(game.snake_direction, Direction::Right);
+
+        game.handle_key(Key::Down);
+        game.handle_key(Key::Up);
+        assert_eq!(game.snake_direction, Direction::Down);
+
+        game.handle_key(Key::Left);
+        game.handle_key(Key::Right);
+        assert_eq!(game.snake_direction, Direction::Left);
+
+    }
+
+    #[test]
+    fn snake_does_not_hit_wall() {
+        let mut game = create_basic_game();
+        let res = game.check_if_hit_wall();
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn snake_hits_wall() {
+        let mut game = create_basic_game();
+        game.snake_body.pop_front().unwrap();
+        game.snake_body.push_front((10,10));
+        let res = game.check_if_hit_wall();
+        assert!(res.is_err());
+    }
 
 }
