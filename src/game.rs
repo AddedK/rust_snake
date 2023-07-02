@@ -27,6 +27,7 @@ impl Default for Game {
         let board = vec![vec![0;num_cols];num_rows];
         let mut snake_body = VecDeque::new();
         snake_body.push_front((1,1));
+        snake_body.push_front((2,1));
         let snake_direction = Direction::Right;
         let food_position = (2,2);
         Game{num_rows, num_cols, board, snake_body, snake_direction, food_position}
