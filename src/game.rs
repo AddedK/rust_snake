@@ -79,6 +79,10 @@ impl Game {
         &self.snake_body
     }
 
+    pub fn get_food_position(&self) -> &(i32, i32) {
+        &self.food_position
+    }
+
     pub fn handle_key(&mut self, key: Key) {
         match key {
             Key::Left => {
