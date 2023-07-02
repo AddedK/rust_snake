@@ -67,6 +67,18 @@ impl Game {
         Game{num_rows, num_cols, board, snake_body, snake_direction, food_position}
     }
 
+    pub fn get_num_rows(&self) -> usize {
+        self.num_rows
+    }
+
+    pub fn get_num_cols(&self) -> usize {
+        self.num_cols
+    }
+
+    pub fn get_snake_positions(&self) -> &VecDeque<(i32, i32)> {
+        &self.snake_body
+    }
+
     pub fn handle_key(&mut self, key: Key) {
         match key {
             Key::Left => {
