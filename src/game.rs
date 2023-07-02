@@ -142,11 +142,11 @@ impl Game {
         if self.snake_body.front().unwrap().0 >= self.num_cols as i32
             || self.snake_body.front().unwrap().0 < 0
         {
-            return Err("Snake head is too far left or right");
+            return Err("Snake hit left or right wall");
         } else if self.snake_body.front().unwrap().1 >= self.num_rows as i32
             || self.snake_body.front().unwrap().1 < 0
         {
-            return Err("Snake head is too far dowm or up");
+            return Err("Snake head hit top or bottom wall");
         }
         Ok(())
     }
