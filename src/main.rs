@@ -12,7 +12,7 @@ use std::collections::VecDeque;
 mod game;
 use game::Game;
 
-fn my_render(
+fn render_game(
     event: Event,
     window: &mut PistonWindow,
     game: &Game,
@@ -96,7 +96,7 @@ fn main() {
             _ => (),
         }
 
-        my_render(event, &mut window, &game);
+        render_game(event, &mut window, &game);
         println!("Done rendering {count}");
         count += 1;
         thread::sleep(Duration::from_millis(100));
