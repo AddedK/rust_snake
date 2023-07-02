@@ -171,14 +171,14 @@ impl Game {
 
         let mut valid_new_position = Vec::new();
 
-        for row in 0..=self.board.len() {
-            for col in 0..=self.board[0].len() {
+        for row in 0..self.board.len() {
+            for col in 0..self.board[0].len() {
                 if self.board[row][col] == 0 {
                     valid_new_position.push((row as i32, col as i32));
                 }
             }
         }
-        if !valid_new_position.is_empty() {
+        if valid_new_position.is_empty() {
             return Err("No room to spawn food");
         }
 
