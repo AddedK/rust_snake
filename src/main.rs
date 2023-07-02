@@ -33,7 +33,7 @@ fn render_game(
                     position.1 as f64 * draw_height_of_one_square,
                     draw_width_of_one_square,
                     draw_height_of_one_square,
-                ], // rectangle
+                ],
                 c.transform,
                 g,
             );
@@ -46,7 +46,7 @@ fn render_game(
                 food_position.1 as f64 * draw_height_of_one_square,
                 draw_width_of_one_square,
                 draw_height_of_one_square,
-            ], // rectangle
+            ],
             c.transform,
             g,
         );
@@ -86,13 +86,11 @@ fn main() {
             eprintln!("{err}");
             process::exit(1);
         });
-    // let mut start = Instant::now();
     let mut count = 0;
     while let Some(event) = window.next() {
-        // Potentially replace this with if let for close case and button case
         match event {
-            Event::Input(Input::Close(_close_args), _) => break, // close
-            Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game), // update snake direction
+            Event::Input(Input::Close(_close_args), _) => break,
+            Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
             _ => (),
         }
 
