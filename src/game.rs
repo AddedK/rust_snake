@@ -198,11 +198,11 @@ impl Game {
         }
 
         self.check_if_hit_wall()?;
+        self.check_if_hit_snake()?;
 
         let new_head = self.snake_body.front().unwrap();
         self.board[new_head.1 as usize][new_head.0 as usize] = 1;
 
-        self.check_if_hit_snake()?;
 
         if self.snake_found_food() {
             self.spawn_new_food()?;
@@ -210,6 +210,12 @@ impl Game {
             let tail = self.snake_body.pop_back().unwrap();
             self.board[tail.1 as usize][tail.0 as usize] = 0;
         }
+
+        Ok(())
+    }
+
+    pub fn update_game(&mut self) -> Result<(), &'static str> {
+        self.move_snake()?;
 
         Ok(())
     }
