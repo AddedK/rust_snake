@@ -2,18 +2,14 @@ use piston_window::Button::Keyboard;
 use piston_window::*;
 use std::process;
 use std::thread;
-use std::time::{Instant};
+use std::time::Instant;
 
 use std::collections::VecDeque;
 
 mod game;
 use game::Game;
 
-fn render_game(
-    event: Event,
-    window: &mut PistonWindow,
-    game: &Game,
-) {
+fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
     let snake_color = [0.2, 0.6, 0.3, 1.0];
     let food_color = [0.7, 0.3, 0.2, 1.0];
 
@@ -86,12 +82,13 @@ fn main() {
     let mut start_time = Instant::now();
     while let Some(event) = window.next() {
         let duration = start_time.elapsed();
+
         match event {
             Event::Input(Input::Close(_close_args), _) => break,
             Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
             _ => (),
         }
-        if duration.as_secs() > 2 {
+        if duration.as_millis() > 500 {
             if let Err(err) = game.update_game() {
                 eprintln!("Update game failed: {err}");
                 break;
