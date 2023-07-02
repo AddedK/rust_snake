@@ -169,15 +169,16 @@ impl Game {
                 self.snake_body.push_front((old_head.0, old_head.1 + 1))
             }
         }
-        Game::check_if_hit_wall(self)?;
 
+        self.check_if_hit_wall()?;
+        
         let new_head = self.snake_body.front().unwrap();
         self.board[new_head.1 as usize][new_head.0 as usize] = 1;
-
-        Game::check_if_hit_snake(self)?;
+        
+        self.check_if_hit_snake()?;
 
         if self.snake_found_food() {
-            Game::spawn_new_food(self)?;
+            self.spawn_new_food()?;
         } else {
             let tail = self.snake_body.pop_back().unwrap();
             self.board[tail.1 as usize][tail.0 as usize] = 0;
@@ -186,6 +187,7 @@ impl Game {
         Ok(())
     
     }
+
 }
 
 #[cfg(test)]
