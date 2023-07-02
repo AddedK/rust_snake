@@ -322,6 +322,14 @@ mod test {
         let res = game.snake_found_food();
         assert!(!res);
     }
+    #[test]
+    fn snake_does_find_food() {
+        let mut game = create_basic_game();
+        game.snake_body.pop_front().unwrap();
+        game.snake_body.push_front((2,2));
+        let res = game.snake_found_food();
+        assert!(res);
+    }
 
 
 }
