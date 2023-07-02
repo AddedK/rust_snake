@@ -182,7 +182,7 @@ impl Game {
             return Err("No room to spawn food");
         }
 
-        let rand_die = Uniform::from(0..=valid_new_position.len());
+        let rand_die = Uniform::from(0..valid_new_position.len());
         let rand_index = rand_die.sample(&mut rng);
         self.food_position = valid_new_position[rand_index];
         Ok(())
