@@ -15,23 +15,19 @@ use game::Game;
 fn my_render(
     event: Event,
     window: &mut PistonWindow,
-    rng: &mut rand::rngs::ThreadRng,
     game: &Game,
 ) {
-    let rn1: types::ColorComponent = rng.gen();
-    let rn2: types::ColorComponent = rng.gen();
-    let rn3: types::ColorComponent = rng.gen();
-    let rn4: types::ColorComponent = rng.gen();
-
-    let random_color: Color = [rn1, rn2, rn3, rn4];
+    let snake_color = [0.2, 0.6, 0.3, 1.0];
+    let food_color = [0.7, 0.3, 0.2, 1.0];
 
     let draw_width_of_one_square = window.size().width / game.get_num_rows() as f64;
     let draw_height_of_one_square = window.size().height / game.get_num_cols() as f64;
+
     window.draw_2d(&event, |c, g, _| {
         clear([0.5, 0.5, 0.5, 1.0], g);
         for position in game.get_snake_positions() {
             rectangle(
-                random_color, // red
+                snake_color,
                 [
                     position.0 as f64 * draw_width_of_one_square,
                     position.1 as f64 * draw_height_of_one_square,
@@ -42,6 +38,18 @@ fn my_render(
                 g,
             );
         }
+        let food_position = game.get_food_position();
+        rectangle(
+            food_color,
+            [
+                food_position.0 as f64 * draw_width_of_one_square,
+                food_position.1 as f64 * draw_height_of_one_square,
+                draw_width_of_one_square,
+                draw_height_of_one_square,
+            ], // rectangle
+            c.transform,
+            g,
+        );
     });
 }
 
@@ -58,9 +66,9 @@ fn main() {
     let mut snake_body = VecDeque::new();
     snake_body.push_front((0, 0));
     snake_body.push_front((1, 0));
-    snake_body.push_front((2, 2));
+    snake_body.push_front((2, 0));
     let snake_direction = game::Direction::Right;
-    let food_position = (2, 2);
+    let food_position = (5, 5);
 
     let mut game = Game::new(
         num_rows,
@@ -88,7 +96,7 @@ fn main() {
             _ => (),
         }
 
-        my_render(event, &mut window, &mut rng, &game);
+        my_render(event, &mut window, &game);
         println!("Done rendering {count}");
         count += 1;
         thread::sleep(Duration::from_millis(100));
