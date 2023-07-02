@@ -1,13 +1,13 @@
 use piston_window::Key;
-use std::collections::VecDeque;
 use rand::distributions::{Distribution, Uniform};
+use std::collections::VecDeque;
 
 #[derive(PartialEq, Debug)]
 pub enum Direction {
     Left,
     Up,
     Right,
-    Down
+    Down,
 }
 
 #[derive(PartialEq, Debug)]
@@ -24,18 +24,31 @@ impl Default for Game {
     fn default() -> Self {
         let num_rows = 10;
         let num_cols = 10;
-        let board = vec![vec![0;num_cols];num_rows];
+        let board = vec![vec![0; num_cols]; num_rows];
         let mut snake_body = VecDeque::new();
-        snake_body.push_front((1,1));
-        snake_body.push_front((2,1));
+        snake_body.push_front((1, 1));
+        snake_body.push_front((2, 1));
         let snake_direction = Direction::Right;
-        let food_position = (2,2);
-        Game{num_rows, num_cols, board, snake_body, snake_direction, food_position}
+        let food_position = (2, 2);
+        Game {
+            num_rows,
+            num_cols,
+            board,
+            snake_body,
+            snake_direction,
+            food_position,
+        }
     }
 }
 
 impl Game {
-    pub fn new(num_rows: usize, num_cols: usize, mut snake_body: VecDeque<(i32, i32)>, snake_direction: Direction, food_position: (i32, i32)) -> Game {
+    pub fn new(
+        num_rows: usize,
+        num_cols: usize,
+        mut snake_body: VecDeque<(i32, i32)>,
+        snake_direction: Direction,
+        food_position: (i32, i32),
+    ) -> Game {
         if num_rows == 0 {
             println!("num_rows is zero. Defaulting");
             return Game::default();
@@ -45,27 +58,42 @@ impl Game {
             return Game::default();
         }
 
-        let mut board = vec![vec![0;num_cols];num_rows];
+        let mut board = vec![vec![0; num_cols]; num_rows];
         for snake_position in &snake_body {
-            if snake_position.0 < 0 || snake_position.0 as usize >= num_cols || snake_position.1 < 0 || snake_position.1 as usize >= num_rows {
+            if snake_position.0 < 0
+                || snake_position.0 as usize >= num_cols
+                || snake_position.1 < 0
+                || snake_position.1 as usize >= num_rows
+            {
                 println!("Snake is out of bounds. Defaulting");
                 return Game::default();
             }
-            board[snake_position.0 as usize][snake_position.1 as usize] =  1;
+            board[snake_position.0 as usize][snake_position.1 as usize] = 1;
         }
         if snake_body.is_empty() {
             if food_position == (0, 0) {
-                snake_body.push_front((1,1));
+                snake_body.push_front((1, 1));
             } else {
-                snake_body.push_front((0,0));
+                snake_body.push_front((0, 0));
             }
         }
-        if food_position.0 < 0 || food_position.0 as usize >= num_cols || food_position.1 < 0 || food_position.1 as usize >= num_rows {
+        if food_position.0 < 0
+            || food_position.0 as usize >= num_cols
+            || food_position.1 < 0
+            || food_position.1 as usize >= num_rows
+        {
             println!("Food is out of bounds. Defaulting");
             return Game::default();
         }
 
-        Game{num_rows, num_cols, board, snake_body, snake_direction, food_position}
+        Game {
+            num_rows,
+            num_cols,
+            board,
+            snake_body,
+            snake_direction,
+            food_position,
+        }
     }
 
     pub fn get_num_rows(&self) -> usize {
@@ -87,40 +115,47 @@ impl Game {
     pub fn handle_key(&mut self, key: Key) {
         match key {
             Key::Left => {
-               if self.snake_direction != Direction::Right {
-                self.snake_direction = Direction::Left
-               } 
-            },
+                if self.snake_direction != Direction::Right {
+                    self.snake_direction = Direction::Left
+                }
+            }
             Key::Up => {
                 if self.snake_direction != Direction::Down {
-                 self.snake_direction = Direction::Up
-                } 
-            },
+                    self.snake_direction = Direction::Up
+                }
+            }
             Key::Right => {
                 if self.snake_direction != Direction::Left {
-                 self.snake_direction = Direction::Right
-                } 
-            },
+                    self.snake_direction = Direction::Right
+                }
+            }
             Key::Down => {
                 if self.snake_direction != Direction::Up {
-                 self.snake_direction = Direction::Down
-                } 
-            },
-            _ => println!("Unused key")
+                    self.snake_direction = Direction::Down
+                }
+            }
+            _ => println!("Unused key"),
         }
     }
 
-    pub fn check_if_hit_wall(&mut self) ->  Result<(),&'static str> {
-        if self.snake_body.front().unwrap().0 >= self.num_cols as i32 || self.snake_body.front().unwrap().0 < 0 {
+    pub fn check_if_hit_wall(&mut self) -> Result<(), &'static str> {
+        if self.snake_body.front().unwrap().0 >= self.num_cols as i32
+            || self.snake_body.front().unwrap().0 < 0
+        {
             return Err("Snake head is too far left or right");
-        } else if self.snake_body.front().unwrap().1 >= self.num_rows as i32 || self.snake_body.front().unwrap().1 < 0 {
+        } else if self.snake_body.front().unwrap().1 >= self.num_rows as i32
+            || self.snake_body.front().unwrap().1 < 0
+        {
             return Err("Snake head is too far dowm or up");
         }
         Ok(())
     }
 
-    pub fn check_if_hit_snake(&mut self) ->  Result<(),&'static str>  {
-        if self.board[self.snake_body.front().unwrap().1 as usize][self.snake_body.front().unwrap().0 as usize] == 1 {
+    pub fn check_if_hit_snake(&mut self) -> Result<(), &'static str> {
+        if self.board[self.snake_body.front().unwrap().1 as usize]
+            [self.snake_body.front().unwrap().0 as usize]
+            == 1
+        {
             return Err("Snake hit itself");
         }
 
@@ -128,14 +163,14 @@ impl Game {
     }
 
     pub fn snake_found_food(&mut self) -> bool {
-        self.snake_body.front().unwrap() == &self.food_position 
+        self.snake_body.front().unwrap() == &self.food_position
     }
 
     pub fn spawn_new_food(&mut self) -> Result<(), &'static str> {
         let mut rng = rand::thread_rng();
-        
+
         let mut valid_new_position = Vec::new();
-        
+
         for row in 0..=self.board.len() {
             for col in 0..=self.board[0].len() {
                 if self.board[row][col] == 0 {
@@ -146,35 +181,27 @@ impl Game {
         if !valid_new_position.is_empty() {
             return Err("No room to spawn food");
         }
-        
+
         let rand_die = Uniform::from(0..=valid_new_position.len());
         let rand_index = rand_die.sample(&mut rng);
         self.food_position = valid_new_position[rand_index];
         Ok(())
     }
 
-    pub fn move_snake(&mut self) -> Result<(),&'static str> {
+    pub fn move_snake(&mut self) -> Result<(), &'static str> {
         let old_head = self.snake_body.front().unwrap();
         match self.snake_direction {
-            Direction::Left => {
-                self.snake_body.push_front((old_head.0 - 1, old_head.1))
-            }
-            Direction::Up => {
-                self.snake_body.push_front((old_head.0, old_head.1 - 1))
-            }
-            Direction::Right => {
-                self.snake_body.push_front((old_head.0 + 1, old_head.1))
-            }
-            Direction::Down => {
-                self.snake_body.push_front((old_head.0, old_head.1 + 1))
-            }
+            Direction::Left => self.snake_body.push_front((old_head.0 - 1, old_head.1)),
+            Direction::Up => self.snake_body.push_front((old_head.0, old_head.1 - 1)),
+            Direction::Right => self.snake_body.push_front((old_head.0 + 1, old_head.1)),
+            Direction::Down => self.snake_body.push_front((old_head.0, old_head.1 + 1)),
         }
 
         self.check_if_hit_wall()?;
-        
+
         let new_head = self.snake_body.front().unwrap();
         self.board[new_head.1 as usize][new_head.0 as usize] = 1;
-        
+
         self.check_if_hit_snake()?;
 
         if self.snake_found_food() {
@@ -185,9 +212,7 @@ impl Game {
         }
 
         Ok(())
-    
     }
-
 }
 
 #[cfg(test)]
@@ -199,11 +224,17 @@ mod test {
         let num_rows = 10;
         let num_cols = 10;
         let mut snake_body = VecDeque::new();
-        snake_body.push_front((4,4));
+        snake_body.push_front((4, 4));
         let snake_direction = Direction::Right;
-        let food_position = (2,2);
+        let food_position = (2, 2);
 
-        Game::new(num_rows, num_cols, snake_body, snake_direction, food_position)
+        Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            snake_direction,
+            food_position,
+        )
     }
 
     #[test]
@@ -212,10 +243,16 @@ mod test {
         let num_cols = 10;
         let snake_body = VecDeque::new();
         let snake_direction = Direction::Right;
-        let food_position = (0,0);
+        let food_position = (0, 0);
 
-        let bad_game = Game::new(num_rows, num_cols, snake_body, snake_direction, food_position);
-        assert_eq!(bad_game.snake_body.front().unwrap(), &(1,1)); 
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            snake_direction,
+            food_position,
+        );
+        assert_eq!(bad_game.snake_body.front().unwrap(), &(1, 1));
     }
 
     #[test]
@@ -225,14 +262,20 @@ mod test {
         let num_rows = 5;
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
-        snake_body.push_front((4,4));
-        snake_body.push_front((5,5));
+        snake_body.push_front((4, 4));
+        snake_body.push_front((5, 5));
         let snake_direction = Direction::Right;
-        let food_position = (0,0);
+        let food_position = (0, 0);
 
-        let bad_game = Game::new(num_rows, num_cols, snake_body, snake_direction, food_position);
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            snake_direction,
+            food_position,
+        );
 
-        assert_eq!(bad_game, default_game); 
+        assert_eq!(bad_game, default_game);
     }
 
     #[test]
@@ -242,30 +285,42 @@ mod test {
         let num_rows = 5;
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
-        snake_body.push_front((0,0));
-        snake_body.push_front((1,1));
+        snake_body.push_front((0, 0));
+        snake_body.push_front((1, 1));
         let snake_direction = Direction::Right;
-        let food_position = (4,4);
+        let food_position = (4, 4);
 
-        let bad_game = Game::new(num_rows, num_cols, snake_body, snake_direction, food_position);
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            snake_direction,
+            food_position,
+        );
 
-        assert_ne!(bad_game, default_game); 
+        assert_ne!(bad_game, default_game);
     }
 
     #[test]
     fn new_game_food_out_of_bounds() {
         let default_game = Game::default();
-        
+
         let num_rows = 5;
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
-        snake_body.push_front((1,1));
+        snake_body.push_front((1, 1));
         let snake_direction = Direction::Right;
-        let food_position = (5,5);
+        let food_position = (5, 5);
 
-        let bad_game = Game::new(num_rows, num_cols, snake_body, snake_direction, food_position);
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            snake_direction,
+            food_position,
+        );
 
-        assert_eq!(bad_game, default_game); 
+        assert_eq!(bad_game, default_game);
     }
 
     #[test]
@@ -307,7 +362,6 @@ mod test {
         game.handle_key(Key::Left);
         game.handle_key(Key::Right);
         assert_eq!(game.snake_direction, Direction::Left);
-
     }
 
     #[test]
@@ -321,7 +375,7 @@ mod test {
     fn snake_hits_wall() {
         let mut game = create_basic_game();
         game.snake_body.pop_front().unwrap();
-        game.snake_body.push_front((10,10));
+        game.snake_body.push_front((10, 10));
         let res = game.check_if_hit_wall();
         assert!(res.is_err());
     }
@@ -330,7 +384,7 @@ mod test {
     fn snake_does_not_hit_snake() {
         let mut game = create_basic_game();
         game.snake_body.pop_front().unwrap();
-        game.snake_body.push_front((5,5));
+        game.snake_body.push_front((5, 5));
         let res = game.check_if_hit_snake();
         assert!(res.is_ok());
     }
@@ -345,10 +399,8 @@ mod test {
     fn snake_does_find_food() {
         let mut game = create_basic_game();
         game.snake_body.pop_front().unwrap();
-        game.snake_body.push_front((2,2));
+        game.snake_body.push_front((2, 2));
         let res = game.snake_found_food();
         assert!(res);
     }
-
-
 }
