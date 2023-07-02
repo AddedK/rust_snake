@@ -16,7 +16,7 @@ pub struct Game {
     num_cols: usize,
     board: Vec<Vec<u8>>,
     snake_body: VecDeque<(i32, i32)>,
-    snake_direction: Direction,
+    current_snake_direction: Direction,
     food_position: (i32, i32),
 }
 
@@ -28,14 +28,14 @@ impl Default for Game {
         let mut snake_body = VecDeque::new();
         snake_body.push_front((1, 1));
         snake_body.push_front((2, 1));
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (2, 2);
         Game {
             num_rows,
             num_cols,
             board,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         }
     }
@@ -46,7 +46,7 @@ impl Game {
         num_rows: usize,
         num_cols: usize,
         mut snake_body: VecDeque<(i32, i32)>,
-        snake_direction: Direction,
+        current_snake_direction: Direction,
         food_position: (i32, i32),
     ) -> Game {
         if num_rows == 0 {
@@ -91,7 +91,7 @@ impl Game {
             num_cols,
             board,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         }
     }
@@ -115,23 +115,23 @@ impl Game {
     pub fn handle_key(&mut self, key: Key) {
         match key {
             Key::Left => {
-                if self.snake_direction != Direction::Right {
-                    self.snake_direction = Direction::Left
+                if self.current_snake_direction != Direction::Right {
+                    self.current_snake_direction = Direction::Left
                 }
             }
             Key::Up => {
-                if self.snake_direction != Direction::Down {
-                    self.snake_direction = Direction::Up
+                if self.current_snake_direction != Direction::Down {
+                    self.current_snake_direction = Direction::Up
                 }
             }
             Key::Right => {
-                if self.snake_direction != Direction::Left {
-                    self.snake_direction = Direction::Right
+                if self.current_snake_direction != Direction::Left {
+                    self.current_snake_direction = Direction::Right
                 }
             }
             Key::Down => {
-                if self.snake_direction != Direction::Up {
-                    self.snake_direction = Direction::Down
+                if self.current_snake_direction != Direction::Up {
+                    self.current_snake_direction = Direction::Down
                 }
             }
             _ => println!("Unused key"),
@@ -190,7 +190,7 @@ impl Game {
 
     pub fn move_snake(&mut self) -> Result<(), &'static str> {
         let old_head = self.snake_body.front().unwrap();
-        match self.snake_direction {
+        match self.current_snake_direction {
             Direction::Left => self.snake_body.push_front((old_head.0 - 1, old_head.1)),
             Direction::Up => self.snake_body.push_front((old_head.0, old_head.1 - 1)),
             Direction::Right => self.snake_body.push_front((old_head.0 + 1, old_head.1)),
@@ -231,14 +231,14 @@ mod test {
         let num_cols = 10;
         let mut snake_body = VecDeque::new();
         snake_body.push_front((4, 4));
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (2, 2);
 
         Game::new(
             num_rows,
             num_cols,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         )
     }
@@ -248,14 +248,14 @@ mod test {
         let num_rows = 10;
         let num_cols = 10;
         let snake_body = VecDeque::new();
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (0, 0);
 
         let bad_game = Game::new(
             num_rows,
             num_cols,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         );
         assert_eq!(bad_game.snake_body.front().unwrap(), &(1, 1));
@@ -270,14 +270,14 @@ mod test {
         let mut snake_body = VecDeque::new();
         snake_body.push_front((4, 4));
         snake_body.push_front((5, 5));
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (0, 0);
 
         let bad_game = Game::new(
             num_rows,
             num_cols,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         );
 
@@ -293,14 +293,14 @@ mod test {
         let mut snake_body = VecDeque::new();
         snake_body.push_front((0, 0));
         snake_body.push_front((1, 1));
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (4, 4);
 
         let bad_game = Game::new(
             num_rows,
             num_cols,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         );
 
@@ -315,14 +315,14 @@ mod test {
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
         snake_body.push_front((1, 1));
-        let snake_direction = Direction::Right;
+        let current_snake_direction = Direction::Right;
         let food_position = (5, 5);
 
         let bad_game = Game::new(
             num_rows,
             num_cols,
             snake_body,
-            snake_direction,
+            current_snake_direction,
             food_position,
         );
 
@@ -334,16 +334,16 @@ mod test {
         let mut game = create_basic_game();
 
         game.handle_key(Key::Down);
-        assert_eq!(game.snake_direction, Direction::Down);
+        assert_eq!(game.current_snake_direction, Direction::Down);
 
         game.handle_key(Key::Left);
-        assert_eq!(game.snake_direction, Direction::Left);
+        assert_eq!(game.current_snake_direction, Direction::Left);
 
         game.handle_key(Key::Up);
-        assert_eq!(game.snake_direction, Direction::Up);
+        assert_eq!(game.current_snake_direction, Direction::Up);
 
         game.handle_key(Key::Right);
-        assert_eq!(game.snake_direction, Direction::Right);
+        assert_eq!(game.current_snake_direction, Direction::Right);
     }
 
     #[test]
@@ -351,23 +351,23 @@ mod test {
         let mut game = create_basic_game();
 
         game.handle_key(Key::Left);
-        assert_eq!(game.snake_direction, Direction::Right);
+        assert_eq!(game.current_snake_direction, Direction::Right);
 
         game.handle_key(Key::Up);
         game.handle_key(Key::Down);
-        assert_eq!(game.snake_direction, Direction::Up);
+        assert_eq!(game.current_snake_direction, Direction::Up);
 
         game.handle_key(Key::Right);
         game.handle_key(Key::Left);
-        assert_eq!(game.snake_direction, Direction::Right);
+        assert_eq!(game.current_snake_direction, Direction::Right);
 
         game.handle_key(Key::Down);
         game.handle_key(Key::Up);
-        assert_eq!(game.snake_direction, Direction::Down);
+        assert_eq!(game.current_snake_direction, Direction::Down);
 
         game.handle_key(Key::Left);
         game.handle_key(Key::Right);
-        assert_eq!(game.snake_direction, Direction::Left);
+        assert_eq!(game.current_snake_direction, Direction::Left);
     }
 
     #[test]
