@@ -1,7 +1,6 @@
 use piston_window::types::Color;
 use piston_window::Button::Keyboard;
 use piston_window::*;
-use rand::Rng;
 use std::process;
 use std::thread;
 use std::time::Duration;
@@ -78,7 +77,6 @@ fn main() {
         food_position,
     );
 
-    let mut rng = rand::thread_rng();
     let mut window: PistonWindow = WindowSettings::new("Hello World!", [512; 2])
         .build()
         .unwrap_or_else(|err| {
