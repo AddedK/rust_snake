@@ -310,8 +310,17 @@ mod test {
     #[test]
     fn snake_does_not_hit_snake() {
         let mut game = create_basic_game();
+        game.snake_body.pop_front().unwrap();
+        game.snake_body.push_front((5,5));
         let res = game.check_if_hit_snake();
         assert!(res.is_ok());
+    }
+
+    #[test]
+    fn snake_does_not_find_food() {
+        let mut game = create_basic_game();
+        let res = game.snake_found_food();
+        assert!(!res);
     }
 
 
