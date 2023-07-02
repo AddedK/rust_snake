@@ -1,11 +1,9 @@
-use piston_window::types::Color;
 use piston_window::Button::Keyboard;
 use piston_window::*;
 use std::process;
 use std::thread;
 use std::time::Duration;
 
-use rand::distributions::{Distribution, Uniform};
 use std::collections::VecDeque;
 
 mod game;
