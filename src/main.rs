@@ -2,7 +2,7 @@ use piston_window::Button::Keyboard;
 use piston_window::*;
 use std::process;
 use std::thread;
-use std::time::Duration;
+use std::time::{Instant};
 
 use std::collections::VecDeque;
 
@@ -83,16 +83,26 @@ fn main() {
             process::exit(1);
         });
     let mut count = 0;
+    let mut start_time = Instant::now();
     while let Some(event) = window.next() {
+        let duration = start_time.elapsed();
         match event {
             Event::Input(Input::Close(_close_args), _) => break,
             Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
             _ => (),
         }
+        if duration.as_secs() > 2 {
+            if let Err(err) = game.update_game() {
+                eprintln!("Update game failed: {err}");
+                break;
+            }
+            start_time = Instant::now();
+        }
 
         render_game(event, &mut window, &game);
-        println!("Done rendering {count}");
+        if count % 100 == 0 {
+            println!("Done rendering {count}");
+        }
         count += 1;
-        thread::sleep(Duration::from_millis(100));
     }
 }
