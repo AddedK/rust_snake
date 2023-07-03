@@ -190,7 +190,7 @@ impl Game {
         for row in 0..self.board.len() {
             for col in 0..self.board[0].len() {
                 if self.board[row][col] == 0 {
-                    valid_new_position.push((row as i32, col as i32));
+                    valid_new_position.push((col as i32, row as i32));
                 }
             }
         }
