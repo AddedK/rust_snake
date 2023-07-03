@@ -57,8 +57,8 @@ fn main() {
     let num_cols = 10;
     let mut snake_body = VecDeque::new();
     snake_body.push_front(game::Position::new(0, 0));
-    snake_body.push_front(game::Position::new(1, 0));
-    snake_body.push_front(game::Position::new(2, 0));
+    snake_body.push_front(game::Position::new(0, 1));
+    snake_body.push_front(game::Position::new(0, 2));
     let snake_direction = game::Direction::Right;
     let food_position = game::Position::new(5, 5);
 
