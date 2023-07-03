@@ -1,7 +1,6 @@
 use piston_window::Button::Keyboard;
 use piston_window::*;
 use std::process;
-use std::thread;
 use std::time::Instant;
 
 use std::collections::VecDeque;

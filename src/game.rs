@@ -1,4 +1,3 @@
-use core::num;
 use piston_window::Key;
 use rand::distributions::{Distribution, Uniform};
 use std::collections::VecDeque;
