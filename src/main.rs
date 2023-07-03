@@ -22,8 +22,8 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
             rectangle(
                 snake_color,
                 [
-                    position.0 as f64 * draw_width_of_one_square,
-                    position.1 as f64 * draw_height_of_one_square,
+                    position.get_column() as f64 * draw_width_of_one_square,
+                    position.get_row() as f64 * draw_height_of_one_square,
                     draw_width_of_one_square,
                     draw_height_of_one_square,
                 ],
@@ -35,8 +35,8 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
         rectangle(
             food_color,
             [
-                food_position.0 as f64 * draw_width_of_one_square,
-                food_position.1 as f64 * draw_height_of_one_square,
+                food_position.get_column() as f64 * draw_width_of_one_square,
+                food_position.get_row() as f64 * draw_height_of_one_square,
                 draw_width_of_one_square,
                 draw_height_of_one_square,
             ],
@@ -57,11 +57,11 @@ fn main() {
     let num_rows = 10;
     let num_cols = 10;
     let mut snake_body = VecDeque::new();
-    snake_body.push_front((0, 0));
-    snake_body.push_front((1, 0));
-    snake_body.push_front((2, 0));
+    snake_body.push_front(game::Position::new(0, 0));
+    snake_body.push_front(game::Position::new(1, 0));
+    snake_body.push_front(game::Position::new(2, 0));
     let snake_direction = game::Direction::Right;
-    let food_position = (5, 5);
+    let food_position = game::Position::new(5, 5);
 
     let mut game = Game::new(
         num_rows,
@@ -88,7 +88,7 @@ fn main() {
             Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
             _ => (),
         }
-        if duration.as_millis() > 500 {
+        if duration.as_millis() > 250 {
             if let Err(err) = game.update_game() {
                 eprintln!("Update game failed: {err}");
                 break;
