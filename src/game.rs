@@ -1,6 +1,6 @@
+use core::num;
 use piston_window::Key;
 use rand::distributions::{Distribution, Uniform};
-use core::num;
 use std::collections::VecDeque;
 
 #[derive(PartialEq, Debug)]
@@ -11,7 +11,6 @@ pub enum Direction {
     Down,
 }
 
-
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Position {
     row: i32,
@@ -20,7 +19,7 @@ pub struct Position {
 
 impl Position {
     pub fn new(row: i32, column: i32) -> Position {
-        Position {row, column}
+        Position { row, column }
     }
 
     pub fn get_row(&self) -> i32 {
@@ -30,7 +29,6 @@ impl Position {
     pub fn get_column(&self) -> i32 {
         self.column
     }
-
 }
 
 #[derive(PartialEq, Debug)]
@@ -50,11 +48,11 @@ impl Default for Game {
         let num_cols = 10;
         let board = vec![vec![0; num_cols]; num_rows];
         let mut snake_body = VecDeque::new();
-        snake_body.push_front(Position::new(1,1));
-        snake_body.push_front(Position::new(2,1));
+        snake_body.push_front(Position::new(1, 1));
+        snake_body.push_front(Position::new(2, 1));
         let current_snake_direction = Direction::Right;
         let next_snake_position = None;
-        let food_position = Position::new(2,2);
+        let food_position = Position::new(2, 2);
         Game {
             num_rows,
             num_cols,
@@ -179,13 +177,9 @@ impl Game {
 
     pub fn check_if_hit_wall(&mut self) -> Result<(), &'static str> {
         let head = self.snake_body.front().unwrap();
-        if head.row >= self.num_rows as i32
-            || head.row < 0
-        {
+        if head.row >= self.num_rows as i32 || head.row < 0 {
             return Err("Snake hit top or bottom wall");
-        } else if head.column >= self.num_cols as i32
-            || head.column < 0
-        {
+        } else if head.column >= self.num_cols as i32 || head.column < 0 {
             return Err("Snake head hit left or right wall");
         }
         Ok(())
@@ -193,10 +187,7 @@ impl Game {
 
     pub fn check_if_hit_snake(&mut self) -> Result<(), &'static str> {
         let head = self.snake_body.front().unwrap();
-        if self.board[head.row as usize]
-            [head.column as usize]
-            == 1
-        {
+        if self.board[head.row as usize][head.column as usize] == 1 {
             return Err("Snake hit itself");
         }
 
@@ -232,10 +223,18 @@ impl Game {
     pub fn move_snake(&mut self) -> Result<(), &'static str> {
         let old_head = self.snake_body.front().unwrap();
         match self.current_snake_direction {
-            Direction::Left => self.snake_body.push_front(Position::new(old_head.row, old_head.column-1)),
-            Direction::Up => self.snake_body.push_front(Position::new(old_head.row-1, old_head.column)),
-            Direction::Right => self.snake_body.push_front(Position::new(old_head.row, old_head.column+1)),
-            Direction::Down => self.snake_body.push_front(Position::new(old_head.row+1, old_head.column)),
+            Direction::Left => self
+                .snake_body
+                .push_front(Position::new(old_head.row, old_head.column - 1)),
+            Direction::Up => self
+                .snake_body
+                .push_front(Position::new(old_head.row - 1, old_head.column)),
+            Direction::Right => self
+                .snake_body
+                .push_front(Position::new(old_head.row, old_head.column + 1)),
+            Direction::Down => self
+                .snake_body
+                .push_front(Position::new(old_head.row + 1, old_head.column)),
         }
 
         self.check_if_hit_wall()?;
@@ -287,7 +286,7 @@ mod test {
     fn create_almost_full_game(num_cols: usize) -> Game {
         let num_rows = 1;
         let mut snake_body = VecDeque::new();
-        for i in 0..num_cols-1 {
+        for i in 0..num_cols - 1 {
             snake_body.push_front(Position::new(0, i as i32));
         }
         let current_snake_direction = Direction::Right;
@@ -522,6 +521,4 @@ mod test {
         assert!(game.move_snake().is_ok());
         assert!(game.move_snake().is_ok());
     }
-
-    
 }
