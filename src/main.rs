@@ -52,7 +52,7 @@ fn handle_buttons(button: ButtonArgs, game: &mut Game) {
     }
 }
 
-fn main() {
+fn create_game() -> Game {
     let num_rows = 10;
     let num_cols = 10;
     let mut snake_body = VecDeque::new();
@@ -62,13 +62,18 @@ fn main() {
     let snake_direction = game::Direction::Right;
     let food_position = game::Position::new(5, 5);
 
-    let mut game = Game::new(
+    Game::new(
         num_rows,
         num_cols,
         snake_body,
         snake_direction,
         food_position,
-    );
+    )
+}
+
+fn main() {
+
+    let mut game = create_game();
 
     let mut window: PistonWindow = WindowSettings::new("Hello World!", [512; 2])
         .build()
@@ -89,8 +94,8 @@ fn main() {
         }
         if duration.as_millis() > 250 {
             if let Err(err) = game.update_game() {
-                eprintln!("Update game failed: {err}");
-                break;
+                eprintln!("Game over cause: {err}");
+                game = create_game();
             }
             start_time = Instant::now();
         }
