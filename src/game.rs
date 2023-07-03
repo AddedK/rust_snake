@@ -1,6 +1,6 @@
 use piston_window::Key;
 use rand::distributions::{Distribution, Uniform};
-use core::num;k
+use core::num;
 use std::collections::VecDeque;
 
 #[derive(PartialEq, Debug)]
@@ -288,10 +288,10 @@ mod test {
         let num_rows = 1;
         let mut snake_body = VecDeque::new();
         for i in 0..num_cols-1 {
-            snake_body.push_front(Position::new(i as i32, 0));
+            snake_body.push_front(Position::new(0, i as i32));
         }
         let current_snake_direction = Direction::Right;
-        let food_position = Position::new(1, 0);
+        let food_position = Position::new(0, num_cols as i32 - 1);
 
         Game::new(
             num_rows,
@@ -491,6 +491,36 @@ mod test {
         game.snake_body.push_front(Position::new(2, 2));
         let res = game.snake_found_food();
         assert!(res);
+    }
+    #[test]
+    fn spawn_food_fails_with_full_small_board() {
+        let mut game = create_almost_full_game(2);
+        let res = game.move_snake();
+        assert!(res.is_err());
+        assert_eq!(res.unwrap_err(), "No room to spawn food");
+    }
+
+    #[test]
+    fn spawn_food_fails_with_full_big_board() {
+        let mut game = create_almost_full_game(10);
+        let res = game.move_snake();
+        assert!(res.is_err());
+        assert_eq!(res.unwrap_err(), "No room to spawn food");
+    }
+    #[test]
+    fn spawn_food_works() {
+        let mut game = create_basic_game();
+        game.handle_key(Key::Up);
+        game.update_direction();
+
+        assert!(game.move_snake().is_ok());
+        assert!(game.move_snake().is_ok());
+
+        game.handle_key(Key::Left);
+        game.update_direction();
+
+        assert!(game.move_snake().is_ok());
+        assert!(game.move_snake().is_ok());
     }
 
     
