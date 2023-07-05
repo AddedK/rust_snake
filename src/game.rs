@@ -184,7 +184,7 @@ impl Game {
         Ok(())
     }
 
-    pub fn check_if_hit_snake(&mut self) -> Result<(), &'static str> {
+    pub fn check_if_hit_snake(&self) -> Result<(), &'static str> {
         let head = self.snake_body.front().unwrap();
         if self.board[head.row as usize][head.column as usize] == 1 {
             return Err("Snake hit itself");
@@ -193,7 +193,7 @@ impl Game {
         Ok(())
     }
 
-    pub fn snake_found_food(&mut self) -> bool {
+    pub fn snake_found_food(&self) -> bool {
         self.snake_body.front().unwrap() == &self.food_position
     }
 
