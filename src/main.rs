@@ -10,13 +10,14 @@ use game::Game;
 
 static SNAKE_COLOR: [f32; 4] = [0.2, 0.6, 0.3, 1.0];
 static FOOD_COLOR: [f32; 4] = [0.7, 0.3, 0.2, 1.0];
+static BACKGROUND_COLOR: [f32; 4] = [0.5, 0.5, 0.5, 1.0];
 
 fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
     let draw_width_of_one_square = window.size().width / game.get_num_rows() as f64;
     let draw_height_of_one_square = window.size().height / game.get_num_cols() as f64;
 
     window.draw_2d(&event, |c, g, _| {
-        clear([0.5, 0.5, 0.5, 1.0], g);
+        clear(BACKGROUND_COLOR, g);
         for position in game.get_snake_positions() {
             rectangle(
                 SNAKE_COLOR,
