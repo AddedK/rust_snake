@@ -48,8 +48,8 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
 }
 
 fn handle_buttons(button: ButtonArgs, game: &mut Game) {
-    let small_button = button.button;
-    if let Keyboard(key) = small_button {
+    let inner_button = button.button;
+    if let Keyboard(key) = inner_button {
         game.handle_key(key);
     }
 }
