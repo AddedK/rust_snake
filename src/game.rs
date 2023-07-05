@@ -34,7 +34,7 @@ impl Position {
 pub struct Game {
     num_rows: usize,
     num_cols: usize,
-    board: Vec<Vec<u8>>,
+    board: Vec<Vec<bool>>,
     snake_body: VecDeque<Position>,
     current_snake_direction: Direction,
     next_snake_position: Option<Direction>,
@@ -45,7 +45,7 @@ impl Default for Game {
     fn default() -> Self {
         let num_rows = 10;
         let num_cols = 10;
-        let board = vec![vec![0; num_cols]; num_rows];
+        let board = vec![vec![false; num_cols]; num_rows];
         let mut snake_body = VecDeque::new();
         snake_body.push_front(Position::new(1, 1));
         snake_body.push_front(Position::new(2, 1));
@@ -81,7 +81,7 @@ impl Game {
             return Game::default();
         }
 
-        let mut board = vec![vec![0; num_cols]; num_rows];
+        let mut board = vec![vec![false; num_cols]; num_rows];
         let mut previous_snake_position: Option<&Position> = None;
         for snake_position in &snake_body {
             if snake_position.row < 0
@@ -92,7 +92,7 @@ impl Game {
                 println!("Snake is out of bounds. Defaulting");
                 return Game::default();
             }
-            board[snake_position.row as usize][snake_position.column as usize] = 1;
+            board[snake_position.row as usize][snake_position.column as usize] = true;
             if let Some(old_position) = previous_snake_position {
                 if (snake_position.row == old_position.row) && (snake_position.column - old_position.column).abs() != 1 {
                     println!("Snake is not contiguous column-wise. Defaulting");
@@ -207,7 +207,7 @@ impl Game {
 
     pub fn check_if_hit_snake(&self) -> Result<(), &'static str> {
         let head = self.snake_body.front().unwrap();
-        if self.board[head.row as usize][head.column as usize] == 1 {
+        if self.board[head.row as usize][head.column as usize] == true {
             return Err("Snake hit itself");
         }
 
@@ -225,7 +225,7 @@ impl Game {
 
         for row in 0..self.board.len() {
             for col in 0..self.board[0].len() {
-                if self.board[row][col] == 0 {
+                if self.board[row][col] == false {
                     valid_new_position.push(Position::new(row as i32, col as i32));
                 }
             }
@@ -261,13 +261,13 @@ impl Game {
         self.check_if_hit_snake()?;
 
         let new_head = self.snake_body.front().unwrap();
-        self.board[new_head.row as usize][new_head.column as usize] = 1;
+        self.board[new_head.row as usize][new_head.column as usize] = true;
 
         if self.snake_found_food() {
             self.spawn_new_food()?;
         } else {
             let tail = self.snake_body.pop_back().unwrap();
-            self.board[tail.row as usize][tail.column as usize] = 0;
+            self.board[tail.row as usize][tail.column as usize] = false;
         }
 
         Ok(())
