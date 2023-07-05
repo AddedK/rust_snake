@@ -502,7 +502,7 @@ mod test {
 
     #[test]
     fn handle_key_next_direction_default() {
-        let mut game = create_basic_game();
+        let game = create_basic_game();
         assert_eq!(game.next_snake_position, None);
     }
 
@@ -567,7 +567,7 @@ mod test {
 
     #[test]
     fn snake_does_not_hit_wall() {
-        let mut game = create_basic_game();
+        let game = create_basic_game();
         let res = game.check_if_hit_wall();
         assert!(res.is_ok());
     }
@@ -592,7 +592,7 @@ mod test {
 
     #[test]
     fn snake_does_not_find_food() {
-        let mut game = create_basic_game();
+        let game = create_basic_game();
         let res = game.snake_found_food();
         assert!(!res);
     }
