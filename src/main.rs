@@ -72,7 +72,6 @@ fn create_game() -> Game {
 }
 
 fn main() {
-
     let mut game = create_game();
 
     let mut window: PistonWindow = WindowSettings::new("Hello World!", [512; 2])
@@ -82,7 +81,6 @@ fn main() {
             eprintln!("{err}");
             process::exit(1);
         });
-    let mut count = 0;
     let mut start_time = Instant::now();
     while let Some(event) = window.next() {
         let duration = start_time.elapsed();
@@ -101,9 +99,5 @@ fn main() {
         }
 
         render_game(event, &mut window, &game);
-        if count % 100 == 0 {
-            println!("Done rendering {count}");
-        }
-        count += 1;
     }
 }
