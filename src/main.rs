@@ -11,9 +11,14 @@ use game::Game;
 static SNAKE_COLOR: [f32; 4] = [0.2, 0.6, 0.3, 1.0];
 static FOOD_COLOR: [f32; 4] = [0.7, 0.3, 0.2, 1.0];
 static BACKGROUND_COLOR: [f32; 4] = [0.5, 0.5, 0.5, 1.0];
-static GAME_UPDATE_SPEED: u128 = 250;
+static GAME_OVER_OVERLAY_COLOR: [f32; 4] = [0.8, 0.1, 0.1, 0.2];
 
-fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
+static GAME_UPDATE_SPEED: u128 = 250;
+static GAME_OVER_SLEEP_MS: u128 = 500;
+
+fn render_game(event: Event, window: &mut PistonWindow, game: &Game, game_over: bool) {
+    let window_width = window.size().width;
+    let window_height: f64 = window.size().height;
     let draw_width_of_one_square = window.size().width / game.get_num_rows() as f64;
     let draw_height_of_one_square = window.size().height / game.get_num_cols() as f64;
 
@@ -44,6 +49,14 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
             c.transform,
             g,
         );
+        if game_over {
+            rectangle(
+                GAME_OVER_OVERLAY_COLOR,
+                [0.0, 0.0, window_width, window_height],
+                c.transform,
+                g,
+            );
+        }
     });
 }
 
@@ -84,22 +97,35 @@ fn main() {
             process::exit(1);
         });
     let mut start_time = Instant::now();
+    let mut game_over_time = Instant::now();
+
+    let mut game_over = false;
     while let Some(event) = window.next() {
-        let duration = start_time.elapsed();
-
-        match event {
-            Event::Input(Input::Close(_close_args), _) => break,
-            Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
-            _ => (),
-        }
-        if duration.as_millis() > GAME_UPDATE_SPEED {
-            if let Err(err) = game.update_game() {
-                eprintln!("Game over cause: {err}");
+        if game_over {
+            if game_over_time.elapsed().as_millis() > GAME_OVER_SLEEP_MS {
                 game = create_game();
+                game_over = false;
             }
-            start_time = Instant::now();
+        } else {
+            let duration = start_time.elapsed();
+
+            match event {
+                Event::Input(Input::Close(_close_args), _) => break,
+                Event::Input(Input::Button(_button_args), _) => {
+                    handle_buttons(_button_args, &mut game)
+                }
+                _ => (),
+            }
+            if duration.as_millis() > GAME_UPDATE_SPEED {
+                if let Err(err) = game.update_game() {
+                    eprintln!("Game over cause: {err}");
+                    game_over = true;
+                    game_over_time = Instant::now();
+                }
+                start_time = Instant::now();
+            }
         }
 
-        render_game(event, &mut window, &game);
+        render_game(event, &mut window, &game, game_over);
     }
 }
