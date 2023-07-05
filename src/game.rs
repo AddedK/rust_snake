@@ -174,7 +174,7 @@ impl Game {
         self.next_snake_position = None;
     }
 
-    pub fn check_if_hit_wall(&mut self) -> Result<(), &'static str> {
+    pub fn check_if_hit_wall(&self) -> Result<(), &'static str> {
         let head = self.snake_body.front().unwrap();
         if head.row >= self.num_rows as i32 || head.row < 0 {
             return Err("Snake hit top or bottom wall");
