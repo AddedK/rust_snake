@@ -8,10 +8,10 @@ use std::collections::VecDeque;
 mod game;
 use game::Game;
 
-fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
-    let snake_color = [0.2, 0.6, 0.3, 1.0];
-    let food_color = [0.7, 0.3, 0.2, 1.0];
+static SNAKE_COLOR: [f32; 4] = [0.2, 0.6, 0.3, 1.0];
+static FOOD_COLOR: [f32; 4] = [0.7, 0.3, 0.2, 1.0];
 
+fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
     let draw_width_of_one_square = window.size().width / game.get_num_rows() as f64;
     let draw_height_of_one_square = window.size().height / game.get_num_cols() as f64;
 
@@ -19,7 +19,7 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
         clear([0.5, 0.5, 0.5, 1.0], g);
         for position in game.get_snake_positions() {
             rectangle(
-                snake_color,
+                SNAKE_COLOR,
                 [
                     position.get_column() as f64 * draw_width_of_one_square,
                     position.get_row() as f64 * draw_height_of_one_square,
@@ -32,7 +32,7 @@ fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
         }
         let food_position = game.get_food_position();
         rectangle(
-            food_color,
+            FOOD_COLOR,
             [
                 food_position.get_column() as f64 * draw_width_of_one_square,
                 food_position.get_row() as f64 * draw_height_of_one_square,
