@@ -85,9 +85,9 @@ impl Game {
         let mut previous_snake_position: Option<&Position> = None;
         for snake_position in &snake_body {
             if snake_position.row < 0
-            || snake_position.row as usize >= num_rows
-            || snake_position.column < 0
-            || snake_position.column as usize >= num_cols
+                || snake_position.row as usize >= num_rows
+                || snake_position.column < 0
+                || snake_position.column as usize >= num_cols
             {
                 println!("Snake is out of bounds. Defaulting");
                 return Game::default();
@@ -97,13 +97,16 @@ impl Game {
                 if (snake_position.row == old_position.row) && (snake_position.column - old_position.column).abs() != 1 {
                     println!("Snake is not contiguous column-wise. Defaulting");
                     return Game::default();
-                } else if (snake_position.column == old_position.column) && (snake_position.row - old_position.row).abs() != 1 {
+                } else if (snake_position.column == old_position.column)
+                    && (snake_position.row - old_position.row).abs() != 1
+                {
                     println!("Snake is not contiguous row-wise. Defaulting");
                     return Game::default();
-                } else if snake_position.column != old_position.column && snake_position.row != old_position.row {
+                } else if snake_position.column != old_position.column
+                    && snake_position.row != old_position.row
+                {
                     println!("Snake differs in both row and column. Defaulting");
                     return Game::default();
-
                 }
             }
 
