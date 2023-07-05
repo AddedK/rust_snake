@@ -94,6 +94,7 @@ impl Game {
             board[snake_position.row as usize][snake_position.column as usize] = 1;
         }
         if snake_body.is_empty() {
+            println!("Snake_body is empty. Creating snake of length 1");
             if food_position == Position::new(0, 0) {
                 snake_body.push_front(Position::new(1, 1));
             } else {
