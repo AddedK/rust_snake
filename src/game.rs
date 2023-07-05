@@ -147,7 +147,7 @@ impl Game {
         }
     }
 
-    pub fn update_direction(&mut self) {
+    fn update_direction(&mut self) {
         match self.next_snake_position {
             Some(Direction::Left) => {
                 if self.current_snake_direction != Direction::Right {
@@ -197,7 +197,7 @@ impl Game {
         self.snake_body.front().unwrap() == &self.food_position
     }
 
-    pub fn spawn_new_food(&mut self) -> Result<(), &'static str> {
+    fn spawn_new_food(&mut self) -> Result<(), &'static str> {
         let mut rng = rand::thread_rng();
 
         let mut valid_new_position = Vec::new();
@@ -219,7 +219,7 @@ impl Game {
         Ok(())
     }
 
-    pub fn move_snake(&mut self) -> Result<(), &'static str> {
+    fn move_snake(&mut self) -> Result<(), &'static str> {
         let old_head = self.snake_body.front().unwrap();
         match self.current_snake_direction {
             Direction::Left => self
