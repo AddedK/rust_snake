@@ -82,17 +82,34 @@ impl Game {
         }
 
         let mut board = vec![vec![0; num_cols]; num_rows];
+        let mut previous_snake_position: Option<&Position> = None;
         for snake_position in &snake_body {
             if snake_position.row < 0
-                || snake_position.row as usize >= num_rows
-                || snake_position.column < 0
-                || snake_position.column as usize >= num_cols
+            || snake_position.row as usize >= num_rows
+            || snake_position.column < 0
+            || snake_position.column as usize >= num_cols
             {
                 println!("Snake is out of bounds. Defaulting");
                 return Game::default();
             }
             board[snake_position.row as usize][snake_position.column as usize] = 1;
+            if let Some(old_position) = previous_snake_position {
+                if (snake_position.row == old_position.row) && (snake_position.column - old_position.column).abs() != 1 {
+                    println!("Snake is not contiguous column-wise. Defaulting");
+                    return Game::default();
+                } else if (snake_position.column == old_position.column) && (snake_position.row - old_position.row).abs() != 1 {
+                    println!("Snake is not contiguous row-wise. Defaulting");
+                    return Game::default();
+                } else if snake_position.column != old_position.column && snake_position.row != old_position.row {
+                    println!("Snake differs in both row and column. Defaulting");
+                    return Game::default();
+
+                }
+            }
+
+            previous_snake_position = Some(snake_position);
         }
+
         if snake_body.is_empty() {
             println!("Snake_body is empty. Creating snake of length 1");
             if food_position == Position::new(0, 0) {
@@ -327,7 +344,7 @@ mod test {
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
         snake_body.push_front(Position::new(4, 4));
-        snake_body.push_front(Position::new(5, 5));
+        snake_body.push_front(Position::new(5, 4));
         let current_snake_direction = Direction::Right;
         let food_position = Position::new(0, 0);
 
@@ -350,6 +367,99 @@ mod test {
         let num_cols = 5;
         let mut snake_body = VecDeque::new();
         snake_body.push_front(Position::new(0, 0));
+        snake_body.push_front(Position::new(0, 1));
+        let current_snake_direction = Direction::Right;
+        let food_position = Position::new(4, 4);
+
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            current_snake_direction,
+            food_position,
+        );
+
+        assert_ne!(bad_game, default_game);
+    }
+
+    #[test]
+    fn new_game_snake_body_not_contiguous_row() {
+        let default_game = Game::default();
+
+        let num_rows = 5;
+        let num_cols = 5;
+        let mut snake_body = VecDeque::new();
+        snake_body.push_front(Position::new(0, 0));
+        snake_body.push_front(Position::new(2, 0));
+        let current_snake_direction = Direction::Right;
+        let food_position = Position::new(4, 4);
+
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            current_snake_direction,
+            food_position,
+        );
+
+        assert_eq!(bad_game, default_game);
+    }
+
+    #[test]
+    fn new_game_snake_body_not_contiguous_column() {
+        let default_game = Game::default();
+
+        let num_rows = 5;
+        let num_cols = 5;
+        let mut snake_body = VecDeque::new();
+        snake_body.push_front(Position::new(0, 0));
+        snake_body.push_front(Position::new(0, 2));
+        let current_snake_direction = Direction::Right;
+        let food_position = Position::new(4, 4);
+
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            current_snake_direction,
+            food_position,
+        );
+
+        assert_eq!(bad_game, default_game);
+    }
+
+    #[test]
+    fn new_game_snake_body_not_contiguous_diagonal() {
+        let default_game = Game::default();
+
+        let num_rows = 5;
+        let num_cols = 5;
+        let mut snake_body = VecDeque::new();
+        snake_body.push_front(Position::new(0, 0));
+        snake_body.push_front(Position::new(1, 1));
+        let current_snake_direction = Direction::Right;
+        let food_position = Position::new(4, 4);
+
+        let bad_game = Game::new(
+            num_rows,
+            num_cols,
+            snake_body,
+            current_snake_direction,
+            food_position,
+        );
+
+        assert_eq!(bad_game, default_game);
+    }
+
+    #[test]
+    fn new_game_snake_body_contiguous() {
+        let default_game = Game::default();
+
+        let num_rows = 5;
+        let num_cols = 5;
+        let mut snake_body = VecDeque::new();
+        snake_body.push_front(Position::new(0, 0));
+        snake_body.push_front(Position::new(0, 1));
         snake_body.push_front(Position::new(1, 1));
         let current_snake_direction = Direction::Right;
         let food_position = Position::new(4, 4);
