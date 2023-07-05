@@ -11,6 +11,7 @@ use game::Game;
 static SNAKE_COLOR: [f32; 4] = [0.2, 0.6, 0.3, 1.0];
 static FOOD_COLOR: [f32; 4] = [0.7, 0.3, 0.2, 1.0];
 static BACKGROUND_COLOR: [f32; 4] = [0.5, 0.5, 0.5, 1.0];
+static GAME_UPDATE_SPEED: u128 = 250;
 
 fn render_game(event: Event, window: &mut PistonWindow, game: &Game) {
     let draw_width_of_one_square = window.size().width / game.get_num_rows() as f64;
@@ -91,7 +92,7 @@ fn main() {
             Event::Input(Input::Button(_button_args), _) => handle_buttons(_button_args, &mut game),
             _ => (),
         }
-        if duration.as_millis() > 250 {
+        if duration.as_millis() > GAME_UPDATE_SPEED {
             if let Err(err) = game.update_game() {
                 eprintln!("Game over cause: {err}");
                 game = create_game();
